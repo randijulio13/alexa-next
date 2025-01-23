@@ -55,7 +55,9 @@ const FormLogin = () => {
             <Label htmlFor="username">Username</Label>
             <Input id="username" {...register("username")} />
             {errors.username && (
-              <span className="text-red-500 text-sm">{errors.username.message}</span>
+              <span className="text-red-500 text-sm">
+                {errors.username.message}
+              </span>
             )}
           </div>
           <div>
@@ -69,9 +71,9 @@ const FormLogin = () => {
           <div>
             <Button
               disabled={isSubmitting}
-              className={cn({ "bg-primary/80": isSubmitting })}
+              className={cn("w-full", { "bg-primary/80": isSubmitting })}
             >
-              {isSubmitting ? "Loading..." : "Login"}
+              {isSubmitting ? "Loading..." : "Sign In"}
             </Button>
           </div>
         </form>
