@@ -24,7 +24,6 @@ const FormLogin = () => {
     register,
     handleSubmit,
     setError,
-    watch,
     formState: { errors },
   } = useForm<LoginFormInputs>();
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
