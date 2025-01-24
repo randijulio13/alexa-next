@@ -1,16 +1,17 @@
-import React from "react";
-import Dashboard from "./_components/Dashboard";
-import { GetTotalContactAction } from "./actions";
 import AppBreadcrumb, {
   BreadcrumbItemProps,
 } from "@/components/app/breadcrumb";
+import React from "react";
 
 const page = async () => {
-  const totalContact = await GetTotalContactAction();
-
+  await new Promise((resolve) => setTimeout(resolve, 5000));
   const items: BreadcrumbItemProps[] = [
     {
       label: "Home",
+      link: "/",
+    },
+    {
+      label: "Events",
     },
   ];
   return (
@@ -18,7 +19,7 @@ const page = async () => {
       <div className="mb-4">
         <AppBreadcrumb items={items} />
       </div>
-      <Dashboard totalContact={totalContact} />
+      <span>Events</span>
     </div>
   );
 };

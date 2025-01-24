@@ -2,7 +2,9 @@ import AppSidebar from "@/components/app/sidebar";
 import AppTopbar from "@/components/app/topbar";
 import { decodeToken } from "@/lib/utils";
 import { cookies } from "next/headers";
-import React from "react";
+import React, { Suspense } from "react";
+import Loading from "./loading";
+import AppBreadcrumb from "@/components/app/breadcrumb";
 
 const layout = async ({
   children,
@@ -18,7 +20,9 @@ const layout = async ({
       <AppSidebar />
       <div className="flex flex-col w-full">
         <AppTopbar userData={userData} />
-        <main>{children}</main>
+        <Suspense fallback={<Loading />}>
+          <main>{children}</main>
+        </Suspense>
       </div>
     </>
   );

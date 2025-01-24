@@ -5,39 +5,43 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Authenticate } from "../actions";
+import { AuthenticateAction } from "../actions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { LoaderCircle } from "lucide-react";
 
-interface LoginFormInputs {
+export interface LoginFormInputs {
   username: string;
   password: string;
+  remember: boolean;
 }
 
 const FormLogin = () => {
   const router = useRouter();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormInputs>();
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
-    setIsSubmitting(true);
     try {
-      const res = await Authenticate(data.username, data.password);
+      const res = await AuthenticateAction(data);
       if (res.error) {
         setError("username", { message: res.error });
-        setIsSubmitting(false);
       }
 
       router.push("/");
     } catch (err) {
-      setIsSubmitting(false);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "An error occurred while signing in",
+      });
       console.error(err);
     }
   };
@@ -53,19 +57,37 @@ const FormLogin = () => {
         >
           <div>
             <Label htmlFor="username">Username</Label>
-            <Input id="username" {...register("username")} />
+            <Input
+              readOnly={isSubmitting}
+              id="username"
+              {...register("username", {
+                required: "Username is required",
+              })}
+            />
             {errors.username && (
-              <span className="text-red-500 text-sm">
+              <span className="text-destructive text-sm">
                 {errors.username.message}
               </span>
             )}
           </div>
           <div>
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" {...register("password")} />
+            <Input
+              readOnly={isSubmitting}
+              id="password"
+              type="password"
+              {...register("password", {
+                required: "Password is required",
+              })}
+            />
+            {errors.password && (
+              <span className="text-destructive text-sm">
+                {errors.password.message}
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-3">
-            <Checkbox id="remember" name="remember" />
+            <Checkbox id="remember" {...register("remember")} />
             <Label htmlFor="remember">Remember Me</Label>
           </div>
           <div>
@@ -73,7 +95,13 @@ const FormLogin = () => {
               disabled={isSubmitting}
               className={cn("w-full", { "bg-primary/80": isSubmitting })}
             >
-              {isSubmitting ? "Loading..." : "Sign In"}
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <LoaderCircle className="animate-spin" /> Loading...
+                </span>
+              ) : (
+                "Sign In"
+              )}
             </Button>
           </div>
         </form>

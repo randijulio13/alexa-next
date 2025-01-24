@@ -4,10 +4,18 @@ import React from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
-import { Moon, Sun } from "lucide-react";
+import { DoorOpen, Moon, Sun } from "lucide-react";
 import { JWTPayload } from "@/schemas/common";
 import { Logout } from "@/app/login/actions";
 import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface AppTopbarProps {
   userData: JWTPayload;
@@ -36,7 +44,17 @@ const AppTopbar = ({ userData }: AppTopbarProps) => {
         >
           {theme === "light" ? <Moon /> : <Sun />}
         </Button>
-        <Button onClick={handleLogout}>{userData.username}</Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost">{userData.name}</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={handleLogout}>
+              <DoorOpen />
+              Sign Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

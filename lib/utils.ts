@@ -8,13 +8,17 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function generateToken(user: User): string {
+export function generateToken(user: User, expiresIn: number): string {
   const jwtSecret = process.env.JWT_SECRET;
-  const token = jwt.sign({ username: user.username }, String(jwtSecret), {});
+
+  const token = jwt.sign(
+    { username: user.username, name: user.name },
+    String(jwtSecret),
+    { expiresIn }
+  );
 
   return token;
 }
-
 
 export function decodeToken(token: string): JWTPayload {
   const jwtSecret = process.env.JWT_SECRET;

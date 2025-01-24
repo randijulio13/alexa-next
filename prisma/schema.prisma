@@ -9,12 +9,47 @@ generator client {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  name       String
-  username   String   @unique
-  password   String
-  is_active  Boolean  @default(true)
-  created_at DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  name      String
+  username  String   @unique
+  password  String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  Event     Event[]
+}
+
+model Event {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  location    String
+  eventDate   DateTime
+  vendors     Vendor[]
+  createdAt   DateTime  @default(now())
+  createdBy   Int
+  Contacts    Contact[]
+  CreatedBy   User      @relation(fields: [createdBy], references: [id])
+}
+
+model Contact {
+  id            Int      @id @default(autoincrement())
+  name          String
+  phone         String
+  address       String
+  instagramLink String?
+  whatsappLink  String?
+  vendor        Vendor[]
+  Event         Event[]
+  createdAt     DateTime @default(now())
+}
+
+model Vendor {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  Contacts    Contact[]
+  Events      Event[]
+  createdAt   DateTime  @default(now())
 }
 
 datasource db {

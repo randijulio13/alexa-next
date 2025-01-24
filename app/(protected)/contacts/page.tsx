@@ -1,16 +1,19 @@
 import React from "react";
-import Dashboard from "./_components/Dashboard";
-import { GetTotalContactAction } from "./actions";
+import Datatable from "./_components/Datatable";
+import { GetContactAction } from "./actions";
 import AppBreadcrumb, {
   BreadcrumbItemProps,
 } from "@/components/app/breadcrumb";
 
 const page = async () => {
-  const totalContact = await GetTotalContactAction();
-
+  const data = await GetContactAction();
   const items: BreadcrumbItemProps[] = [
     {
       label: "Home",
+      link: "/",
+    },
+    {
+      label: "Contacts",
     },
   ];
   return (
@@ -18,7 +21,7 @@ const page = async () => {
       <div className="mb-4">
         <AppBreadcrumb items={items} />
       </div>
-      <Dashboard totalContact={totalContact} />
+      <Datatable initialData={data} />
     </div>
   );
 };
