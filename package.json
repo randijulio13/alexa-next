@@ -4,9 +4,8 @@
     "private": true,
     "scripts": {
         "dev": "next dev --turbopack",
-        "prebuild": "npx prisma generate",
+        "prebuild": "npx prisma migrate deploy && npx prisma generate",
         "build": "next build",
-        "postbuild": "npx prisma migrate deploy",
         "start": "next start",
         "lint": "next lint",
         "lint:fix": "eslint . --fix",
