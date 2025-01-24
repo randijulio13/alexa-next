@@ -1,7 +1,7 @@
 'use server'
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from '@/lib/prisma'
 
 export const GetTotalContactAction = async (): Promise<number> => {
-  return await prisma.contact.count();
-};
+    return await prisma.contact.count()
+}
