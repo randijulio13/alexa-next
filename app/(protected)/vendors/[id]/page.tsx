@@ -1,10 +1,14 @@
-import React from 'react'
-import Datatable from './_components/Datatable'
 import AppBreadcrumb, { BreadcrumbItemProps } from '@/components/app/breadcrumb'
-import { GetVendorAction } from './actions'
+import React from 'react'
+import { GetVendorByIdAction } from '../actions'
 
-const page = async () => {
-    const data = await GetVendorAction()
+interface EditVendorPageProps {
+    params: Promise<{ id: string }>
+}
+
+const page = async ({ params }: EditVendorPageProps) => {
+    const { id } = await params
+    const data = await GetVendorByIdAction(Number(id))
     const items: BreadcrumbItemProps[] = [
         {
             label: 'Home',
@@ -12,14 +16,16 @@ const page = async () => {
         },
         {
             label: 'Vendors',
+            link: '/vendors',
         },
+        { label: data.name },
     ]
     return (
         <div className="p-4">
             <div className="mb-4">
                 <AppBreadcrumb items={items} />
             </div>
-            <Datatable initialData={data} />
+            <div>{id}</div>
         </div>
     )
 }
