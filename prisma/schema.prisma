@@ -15,7 +15,12 @@ model User {
   password  String
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
-  Event     Event[]
+  role      Role     @default(TEAM)
+  contactId Int?
+
+  Contact Contact?  @relation(fields: [contactId], references: [id])
+  Events  Event[]
+  Payment Payment[]
 }
 
 model Event {
@@ -24,12 +29,34 @@ model Event {
   description String
   location    String
   eventDate   DateTime
-  vendors     Vendor[]
   createdAt   DateTime  @default(now())
   createdBy   Int
-  Contacts    Contact[]
+  Clients     Contact[]
   CreatedBy   User      @relation(fields: [createdBy], references: [id])
+  Payment     Payment[]
+  Vendors     Vendor[]
 }
+
+model Vendor {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+  vendorType  VendorType @default(OTHER)
+  createdAt   DateTime   @default(now())
+  Contacts    Contact[]
+  Events      Event[]
+}
+
+// model EventsOnVendors {
+//   eventId   Int
+//   vendorId  Int
+//   createdAt DateTime @default(now())
+//   createdBy Int
+//   Vendor    Vendor   @relation(fields: [vendorId], references: [id])
+//   Event     Event    @relation(fields: [eventId], references: [id])
+
+//   @@id([eventId, vendorId])
+// }
 
 model Contact {
   id            Int      @id @default(autoincrement())
@@ -38,18 +65,40 @@ model Contact {
   address       String
   instagramLink String?
   whatsappLink  String?
-  vendor        Vendor[]
-  Event         Event[]
+  Vendors       Vendor[]
+  Events        Event[]
   createdAt     DateTime @default(now())
+  User          User[]
 }
 
-model Vendor {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String
-  Contacts    Contact[]
-  Events      Event[]
-  createdAt   DateTime  @default(now())
+model Payment {
+  payment_id  Int      @id @default(autoincrement())
+  eventId     Int
+  clientId    Int
+  amount      Float
+  paymentDate DateTime
+  status      String   @db.VarChar(50)
+  createdAt   DateTime @default(now())
+  createdBy   Int
+  CreatedBy   User     @relation(fields: [createdBy], references: [id])
+  Event       Event    @relation(fields: [eventId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  TEAM
+  CLIENT
+}
+
+enum VendorType {
+  VENUE
+  CATERING
+  PHOTOGRAPHY
+  DECORATION
+  ENTERTAINMENT
+  TRANSPORTATION
+  RENTAL
+  OTHER
 }
 
 datasource db {

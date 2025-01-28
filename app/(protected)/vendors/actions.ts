@@ -1,8 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { CreateVendorInputs } from './_components/CreateVendor'
 import { Vendor } from '@prisma/client'
+import { FormSchemaType } from './_components/CreateVendor'
 
 export const GetVendorAction = async (): Promise<Vendor[]> => {
     const vendor = await prisma.vendor.findMany()
@@ -18,11 +18,14 @@ export const GetVendorByIdAction = async (id: number): Promise<Vendor> => {
     return vendor as Vendor
 }
 
-export const CreateVendorAction = async (
-    data: CreateVendorInputs
-): Promise<Vendor> => {
+export const CreateVendorAction = async (data: FormSchemaType): Promise<Vendor> => {
+    console.log({ data })
     const vendor = await prisma.vendor.create({
-        data,
+        data: {
+            name: data.name,
+            description: data.description,
+            vendorType: data.vendorType,
+        },
     })
     return vendor
 }

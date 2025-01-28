@@ -1,11 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-    Table,
-    TableBody,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table'
+import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Contact } from '@prisma/client'
 import { flexRender, HeaderGroup } from '@tanstack/react-table'
 import React from 'react'
@@ -26,10 +20,7 @@ const TableSkeleton = ({ header, row }: TableSkeletonProps) => {
                                 <TableHead key={header.id}>
                                     {header.isPlaceholder
                                         ? null
-                                        : flexRender(
-                                              header.column.columnDef.header,
-                                              header.getContext()
-                                          )}
+                                        : flexRender(header.column.columnDef.header, header.getContext())}
                                 </TableHead>
                             )
                         })}

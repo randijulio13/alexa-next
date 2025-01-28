@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import React, { useMemo, useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
     Dialog,
     DialogContent,
@@ -12,36 +13,60 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { useForm } from 'react-hook-form'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/hooks/use-toast'
 import { CreateVendorAction } from '../actions'
 import { LoaderCircle } from 'lucide-react'
+import { VendorType } from '@prisma/client'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
-export interface CreateVendorInputs {
-    name: string
-    description: string
-}
-
+import { z } from 'zod'
 interface CreateVendorProps {
     getData: () => Promise<void>
 }
+
+export type FormSchemaType = z.infer<typeof FormSchema>
+
+const FormSchema = z.object({
+    name: z
+        .string({
+            required_error: 'Name is required.',
+        })
+        .min(1, 'Name is required'),
+    description: z
+        .string({
+            required_error: 'Description is required',
+        })
+        .min(1, 'Description is required'),
+    vendorType: z.nativeEnum(VendorType, {
+        required_error: 'Vendor type is required',
+    }),
+})
 
 const CreateVendor = ({ getData }: CreateVendorProps) => {
     const [open, setOpen] = useState(false)
     const toggleModal = useMemo(() => () => setOpen(!open), [open])
 
+    const form = useForm<FormSchemaType>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: {
+            name: '',
+            description: '',
+            vendorType: 'OTHER',
+        },
+    })
     const {
-        register,
         handleSubmit,
-        formState: { errors, isSubmitting },
+        formState: { isSubmitting },
         reset,
-    } = useForm<CreateVendorInputs>()
+        control,
+    } = form
 
-    const onSubmit = async (data: CreateVendorInputs) => {
+    const onSubmit = async (data: FormSchemaType) => {
         try {
-            CreateVendorAction(data)
+            await CreateVendorAction(data)
             toast({
                 title: 'Vendor created',
                 description: 'The vendor has been successfully created.',
@@ -69,54 +94,64 @@ const CreateVendor = ({ getData }: CreateVendorProps) => {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Create New Vendor</DialogTitle>
-                    <DialogDescription>
-                        Fill out the form below to create a new vendor.
-                    </DialogDescription>
+                    <DialogDescription>Fill out the form below to create a new vendor.</DialogDescription>
                 </DialogHeader>
-                <form
-                    id="formVendor"
-                    className="grid gap-6 py-4"
-                    onSubmit={handleSubmit(onSubmit)}
-                >
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input
-                            placeholder="John Doe"
-                            readOnly={isSubmitting}
-                            id="name"
-                            {...register('name', {
-                                required: 'This field is required',
-                            })}
+                <Form {...form}>
+                    <form id="formVendor" className="grid gap-6 py-4" onSubmit={handleSubmit(onSubmit)}>
+                        <FormField
+                            control={control}
+                            name="name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Name</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="John Doe" readOnly={isSubmitting} {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                        {errors.name && (
-                            <span className="text-destructive text-sm">
-                                {errors.name.message}
-                            </span>
-                        )}
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="description">Description</Label>
-                        <Textarea
-                            placeholder="1234 Elm St"
-                            readOnly={isSubmitting}
-                            id="description"
-                            {...register('description', {
-                                required: 'This field is required',
-                            })}
+                        <FormField
+                            control={control}
+                            name="description"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Description</FormLabel>
+                                    <FormControl>
+                                        <Textarea placeholder="1234 Elm St" readOnly={isSubmitting} {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                        {errors.description && (
-                            <span className="text-destructive text-sm">
-                                {errors.description.message}
-                            </span>
-                        )}
-                    </div>
-                </form>
+                        <FormField
+                            control={control}
+                            name="vendorType"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Vendor Type</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a vendor type" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {Object.values(VendorType).map((type) => (
+                                                <SelectItem key={type} value={type}>
+                                                    {type}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </form>
+                </Form>
                 <DialogFooter>
-                    <Button
-                        type="submit"
-                        form="formVendor"
-                        disabled={isSubmitting}
-                    >
+                    <Button type="submit" form="formVendor" disabled={isSubmitting}>
                         {isSubmitting ? (
                             <span className="flex items-center gap-2">
                                 <LoaderCircle className="animate-spin" />

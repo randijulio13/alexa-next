@@ -1,5 +1,5 @@
 import React from 'react'
-import Datatable from './_components/Datatable'
+import Datatable from './_components/ContactDatatable'
 import { GetContactAction } from './actions'
 import AppBreadcrumb, { BreadcrumbItemProps } from '@/components/app/breadcrumb'
 
