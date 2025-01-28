@@ -1,3 +1,11 @@
+export type PaginationData<T> = {
+    data: T
+    totalPage: number
+    totalData: number
+    perPage: number
+    currentPage: number
+}
+
 export type BaseActionResponse<T> = Promise<{
     data: T | null
     error: string | null

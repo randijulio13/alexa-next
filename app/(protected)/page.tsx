@@ -6,7 +6,7 @@ import AppBreadcrumb, { BreadcrumbItemProps } from '@/components/app/breadcrumb'
 const page = async () => {
     const totalContact = await GetTotalContactAction()
     const totalVendor = await GetTotalVendorAction()
-    console.log({ totalContact, totalVendor })
+
     const items: BreadcrumbItemProps[] = [
         {
             label: 'Home',

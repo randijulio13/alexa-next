@@ -26,3 +26,44 @@ export function decodeToken(token: string): JWTPayload {
 
     return decoded
 }
+
+export function getPagination(
+    current: number,
+    last: number
+): (string | number)[] {
+    const delta = 1
+    const left = current - delta
+    const right = current + delta + 1
+    const range: number[] = []
+    const rangeWithDots: (string | number)[] = []
+    const firstPageIndex = 0
+
+    if (last < delta * 2 + 3) {
+        return Array.from({ length: last }, (_, i) => i)
+    }
+
+    for (let i = firstPageIndex; i < last; i++) {
+        if (
+            i === firstPageIndex ||
+            i === last - 1 ||
+            (i >= left && i < right)
+        ) {
+            range.push(i)
+        }
+    }
+
+    let previous: number | undefined
+    for (const i of range) {
+        if (previous !== undefined) {
+            if (i - previous === 2) {
+                rangeWithDots.push(previous + 1)
+            } else if (i - previous !== 1) {
+                rangeWithDots.push('...')
+            }
+        }
+        rangeWithDots.push(i)
+        previous = i
+    }
+
+    return rangeWithDots
+}

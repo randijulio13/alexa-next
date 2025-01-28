@@ -18,6 +18,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/hooks/use-toast'
 import { CreateContactAction } from '../actions'
 import { LoaderCircle } from 'lucide-react'
+import { QueryObserverResult } from '@tanstack/react-query'
+import { PaginationData } from '@/schemas/common'
+import { Contact } from '@prisma/client'
 
 export interface CreateContactInputs {
     name: string
@@ -26,10 +29,12 @@ export interface CreateContactInputs {
 }
 
 interface CreateContactProps {
-    getData: () => Promise<void>
+    refetch: () => Promise<
+        QueryObserverResult<PaginationData<Contact[]>, Error>
+    >
 }
 
-const CreateContact = ({ getData }: CreateContactProps) => {
+const CreateContact = ({ refetch }: CreateContactProps) => {
     const [open, setOpen] = useState(false)
     const toggleModal = useMemo(() => () => setOpen(!open), [open])
 
@@ -50,7 +55,7 @@ const CreateContact = ({ getData }: CreateContactProps) => {
             setOpen(false)
             reset()
 
-            getData()
+            refetch()
         } catch (err) {
             if (err instanceof Error) {
                 toast({

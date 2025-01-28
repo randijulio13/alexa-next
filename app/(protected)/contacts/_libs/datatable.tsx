@@ -3,21 +3,8 @@ import { Contact } from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
 import { Trash } from 'lucide-react'
 
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-
 export const getColumn = (
-    // getData: () => Promise<void>,
-    deleteData: (data: Contact) => Promise<void>
+    onClickDelete: React.Dispatch<React.SetStateAction<number | null>>
 ): ColumnDef<Contact>[] => {
     return [
         {
@@ -44,34 +31,14 @@ export const getColumn = (
             header: 'Actions',
             cell: ({ row }) => {
                 return (
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button variant="destructive" size="sm">
-                                <Trash />
-                                Delete
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                    Are you absolutely sure?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This action cannot be undone. This will
-                                    permanently delete your account and remove
-                                    your data from our servers.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                    onClick={() => deleteData(row.original)}
-                                >
-                                    Continue
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                    <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => onClickDelete(row.original.id)}
+                    >
+                        <Trash />
+                        Delete
+                    </Button>
                 )
             },
         },
