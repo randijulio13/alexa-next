@@ -34,7 +34,7 @@ const AppTopbar = ({ userData }: AppTopbarProps) => {
     }
 
     return (
-        <div className="border-b w-full h-16 flex items-center px-4">
+        <div className="w-full h-16 flex items-center px-8">
             <SidebarTrigger />
             <div className="ms-auto flex items-center gap-4">
                 <Button

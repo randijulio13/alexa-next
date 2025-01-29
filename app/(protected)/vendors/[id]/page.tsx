@@ -22,7 +22,7 @@ const page = async ({ params }: EditVendorPageProps) => {
         { label: data.name },
     ]
     return (
-        <div className="p-4">
+        <div className="py-4 px-8">
             <div className="mb-4">
                 <AppBreadcrumb items={items} />
             </div>
