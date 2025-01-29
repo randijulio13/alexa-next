@@ -1,7 +1,7 @@
 import React from 'react'
-import Datatable from './_components/Datatable'
 import AppBreadcrumb, { BreadcrumbItemProps } from '@/components/app/breadcrumb'
 import { GetVendorAction } from './actions'
+import VendorDatatable from './_components/VendorDatatable'
 
 const page = async () => {
     const data = await GetVendorAction()
@@ -19,7 +19,7 @@ const page = async () => {
             <div className="mb-4">
                 <AppBreadcrumb items={items} />
             </div>
-            <Datatable initialData={data} />
+            <VendorDatatable initialData={data} />
         </div>
     )
 }

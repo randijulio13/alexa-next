@@ -34,7 +34,8 @@ model Event {
   Clients     Contact[]
   CreatedBy   User      @relation(fields: [createdBy], references: [id])
   Payment     Payment[]
-  Vendors     Vendor[]
+
+  VendorsEvents VendorsEvents[]
 }
 
 model Vendor {
@@ -44,19 +45,20 @@ model Vendor {
   vendorType  VendorType @default(OTHER)
   createdAt   DateTime   @default(now())
   Contacts    Contact[]
-  Events      Event[]
+
+  VendorsEvents VendorsEvents[]
 }
 
-// model EventsOnVendors {
-//   eventId   Int
-//   vendorId  Int
-//   createdAt DateTime @default(now())
-//   createdBy Int
-//   Vendor    Vendor   @relation(fields: [vendorId], references: [id])
-//   Event     Event    @relation(fields: [eventId], references: [id])
+model VendorsEvents {
+  eventId   Int
+  vendorId  Int
+  createdAt DateTime @default(now())
+  createdBy Int
+  Vendor    Vendor   @relation(fields: [vendorId], references: [id])
+  Event     Event    @relation(fields: [eventId], references: [id])
 
-//   @@id([eventId, vendorId])
-// }
+  @@id([eventId, vendorId])
+}
 
 model Contact {
   id            Int      @id @default(autoincrement())

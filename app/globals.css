@@ -38,7 +38,7 @@ body {
 
         --ring: 234 16% 35%; /* text */
 
-        --radius: 1rem;
+        --radius: 0.5rem;
 
         --chart-1: 347 87% 44%; /* red */
         --chart-2: 183 74% 35%; /* teal */
@@ -85,7 +85,7 @@ body {
 
         --ring: 226 64% 88%; /* text */
 
-        --radius: 1rem;
+        --radius: 0.5rem;
 
         --chart-1: 343 81% 75%; /* red */
         --chart-2: 170 57% 73%; /* teal */

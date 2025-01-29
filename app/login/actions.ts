@@ -8,9 +8,7 @@ import bcrypt from 'bcrypt'
 import { cookies } from 'next/headers'
 import { LoginFormInputs } from './_components/FormLogin'
 
-export const AuthenticateAction = async (
-    request: LoginFormInputs
-): BaseActionResponse<User> => {
+export const AuthenticateAction = async (request: LoginFormInputs): BaseActionResponse<User> => {
     const cookieStore = await cookies()
 
     const user = await prisma.user.findFirst({
@@ -23,10 +21,7 @@ export const AuthenticateAction = async (
         return { data: {} as User, error: 'Incorrect username or password.' }
     }
 
-    const isValidPassword = await bcrypt.compare(
-        request.password,
-        user.password
-    )
+    const isValidPassword = await bcrypt.compare(request.password, user.password)
     if (!isValidPassword) {
         return { data: {} as User, error: 'Incorrect username or password.' }
     }

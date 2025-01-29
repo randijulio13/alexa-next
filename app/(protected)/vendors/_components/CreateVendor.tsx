@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
     Dialog,
@@ -47,7 +47,7 @@ const FormSchema = z.object({
 
 const CreateVendor = ({ getData }: CreateVendorProps) => {
     const [open, setOpen] = useState(false)
-    const toggleModal = useMemo(() => () => setOpen(!open), [open])
+    const toggleModal = useCallback(() => () => setOpen(!open), [open])
 
     const form = useForm<FormSchemaType>({
         resolver: zodResolver(FormSchema),

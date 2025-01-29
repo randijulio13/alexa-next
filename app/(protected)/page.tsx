@@ -1,11 +1,12 @@
 import React from 'react'
 import Dashboard from './_components/Dashboard'
-import { GetTotalContactAction, GetTotalVendorAction } from './actions'
+import { GetTotalContactAction, GetTotalVendorAction, GetTotalEventAction } from './actions'
 import AppBreadcrumb, { BreadcrumbItemProps } from '@/components/app/breadcrumb'
 
 const page = async () => {
     const totalContact = await GetTotalContactAction()
     const totalVendor = await GetTotalVendorAction()
+    const totalEvent = await GetTotalEventAction()
 
     const items: BreadcrumbItemProps[] = [
         {
@@ -17,7 +18,7 @@ const page = async () => {
             <div className="mb-4">
                 <AppBreadcrumb items={items} />
             </div>
-            <Dashboard {...{ totalContact, totalVendor }} />
+            <Dashboard {...{ totalContact, totalVendor, totalEvent }} />
         </div>
     )
 }

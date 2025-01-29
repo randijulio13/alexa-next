@@ -12,8 +12,10 @@ export type BaseActionResponse<T> = Promise<{
 }>
 
 export type JWTPayload = {
+    id: number
     username: string
     name: string
+    role: string
     iat?: number
     exp?: number
 }
@@ -21,4 +23,9 @@ export type JWTPayload = {
 export type Formatter<T = string> = {
     format: (value: T) => string
     parse: (value: string) => T
+}
+
+export type GetPaginateDataActionProps = {
+    page: number
+    take: number
 }

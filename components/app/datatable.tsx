@@ -1,5 +1,5 @@
 import TableSkeleton from '@/components/app/table-skeleton'
-import { ColumnDef, flexRender, Table as TableType } from '@tanstack/react-table'
+import { flexRender, Table as TableType } from '@tanstack/react-table'
 import React, { useMemo } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import {
@@ -13,13 +13,12 @@ import {
 } from '@/components/ui/pagination'
 import { getPagination } from '@/lib/utils'
 
-interface DatatableProps {
+interface DatatableProps<TData> {
     isLoading: boolean
-    table: TableType<any>
-    columns: ColumnDef<any>[]
+    table: TableType<TData>
 }
 
-const Datatable = ({ isLoading, table, columns }: DatatableProps) => {
+const Datatable = <TData,>({ isLoading, table }: DatatableProps<TData>) => {
     const {
         getPageCount,
         getCanNextPage,
@@ -70,7 +69,7 @@ const Datatable = ({ isLoading, table, columns }: DatatableProps) => {
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
                                     No results.
                                 </TableCell>
                             </TableRow>

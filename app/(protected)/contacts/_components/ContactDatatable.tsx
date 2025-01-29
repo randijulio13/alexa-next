@@ -78,7 +78,7 @@ const ContactDatatable = ({ initialData }: DatatableProps) => {
         refetch()
     }, [pagination])
 
-    const [selectedContact, setSelectedContact] = useState<number | null>(null)
+    const [selectedId, setSelectedId] = useState<number | null>(null)
 
     const handleDelete = useCallback(async (id: number) => {
         try {
@@ -105,7 +105,7 @@ const ContactDatatable = ({ initialData }: DatatableProps) => {
     }, [])
 
     const columns = useMemo(() => {
-        return getColumn(setSelectedContact)
+        return getColumn(setSelectedId)
     }, [])
 
     const table = useReactTable({
@@ -129,11 +129,8 @@ const ContactDatatable = ({ initialData }: DatatableProps) => {
             <div>
                 <CreateContact {...{ refetch }} />
             </div>
-            <Datatable columns={columns} table={table} isLoading={isFetching} />
-            <AlertDialog
-                onOpenChange={(state) => setSelectedContact(state ? selectedContact : null)}
-                open={!!selectedContact}
-            >
+            <Datatable table={table} isLoading={isFetching} />
+            <AlertDialog onOpenChange={(state) => setSelectedId(state ? selectedId : null)} open={!!selectedId}>
                 <AlertDialogTrigger asChild></AlertDialogTrigger>
                 <AlertDialogContent>
                     <AlertDialogHeader>
@@ -145,9 +142,7 @@ const ContactDatatable = ({ initialData }: DatatableProps) => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDelete(Number(selectedContact))}>
-                            Continue
-                        </AlertDialogAction>
+                        <AlertDialogAction onClick={() => handleDelete(Number(selectedId))}>Continue</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

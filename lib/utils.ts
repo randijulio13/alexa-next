@@ -12,9 +12,11 @@ export function generateToken(user: User, expiresIn: number): string {
     const jwtSecret = process.env.JWT_SECRET
 
     const token = jwt.sign(
-        { username: user.username, name: user.name },
+        { id: user.id, username: user.username, name: user.name, role: user.role },
         String(jwtSecret),
-        { expiresIn }
+        {
+            expiresIn,
+        }
     )
 
     return token
@@ -27,10 +29,7 @@ export function decodeToken(token: string): JWTPayload {
     return decoded
 }
 
-export function getPagination(
-    current: number,
-    last: number
-): (string | number)[] {
+export function getPagination(current: number, last: number): (string | number)[] {
     const delta = 1
     const left = current - delta
     const right = current + delta + 1
@@ -43,11 +42,7 @@ export function getPagination(
     }
 
     for (let i = firstPageIndex; i < last; i++) {
-        if (
-            i === firstPageIndex ||
-            i === last - 1 ||
-            (i >= left && i < right)
-        ) {
+        if (i === firstPageIndex || i === last - 1 || (i >= left && i < right)) {
             range.push(i)
         }
     }

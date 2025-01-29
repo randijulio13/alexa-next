@@ -12,7 +12,6 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { useForm } from 'react-hook-form'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/hooks/use-toast'
@@ -21,6 +20,9 @@ import { LoaderCircle } from 'lucide-react'
 import { QueryObserverResult } from '@tanstack/react-query'
 import { PaginationData } from '@/schemas/common'
 import { Contact } from '@prisma/client'
+import { z } from 'zod'
+import { Form, FormControl, FormField, FormItem, FormMessage, FormLabel } from '@/components/ui/form'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 export interface CreateContactInputs {
     name: string
@@ -28,24 +30,41 @@ export interface CreateContactInputs {
     address: string
 }
 
+export type FormSchemaType = z.infer<typeof FormSchema>
+
+const FormSchema = z.object({
+    name: z.string().min(1, 'Name is required'),
+    phone: z
+        .string()
+        .regex(/^[0-9]*$/, 'Only numbers are allowed')
+        .min(1, 'Phone Number is required'),
+    address: z.string().min(1, 'Address is required'),
+})
+
 interface CreateContactProps {
-    refetch: () => Promise<
-        QueryObserverResult<PaginationData<Contact[]>, Error>
-    >
+    refetch: () => Promise<QueryObserverResult<PaginationData<Contact[]>, Error>>
 }
 
 const CreateContact = ({ refetch }: CreateContactProps) => {
     const [open, setOpen] = useState(false)
     const toggleModal = useMemo(() => () => setOpen(!open), [open])
 
+    const form = useForm<FormSchemaType>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: {
+            name: '',
+            phone: '',
+            address: '',
+        },
+    })
     const {
-        register,
         handleSubmit,
-        formState: { errors, isSubmitting },
+        control,
+        formState: { isSubmitting },
         reset,
-    } = useForm<CreateContactInputs>()
+    } = form
 
-    const onSubmit = async (data: CreateContactInputs) => {
+    const onSubmit = async (data: FormSchemaType) => {
         try {
             await CreateContactAction(data)
             toast({
@@ -75,74 +94,54 @@ const CreateContact = ({ refetch }: CreateContactProps) => {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Create New Contact</DialogTitle>
-                    <DialogDescription>
-                        Fill out the form below to create a new contact.
-                    </DialogDescription>
+                    <DialogDescription>Fill out the form below to create a new contact.</DialogDescription>
                 </DialogHeader>
-                <form
-                    id="formContact"
-                    className="grid gap-6 py-4"
-                    onSubmit={handleSubmit(onSubmit)}
-                >
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input
-                            placeholder="John Doe"
-                            readOnly={isSubmitting}
-                            id="name"
-                            {...register('name', {
-                                required: 'This field is required',
-                            })}
+                <Form {...form}>
+                    <form id="formContact" className="grid gap-6 py-4" onSubmit={handleSubmit(onSubmit)}>
+                        <FormField
+                            name="name"
+                            control={control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Name</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="John Doe" readOnly={isSubmitting} {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                        {errors.name && (
-                            <span className="text-destructive text-sm">
-                                {errors.name.message}
-                            </span>
-                        )}
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="phone">Phone</Label>
-                        <Input
-                            placeholder="1234567890"
-                            readOnly={isSubmitting}
-                            id="phone"
-                            {...register('phone', {
-                                required: 'This field is required',
-                                pattern: {
-                                    value: /^[0-9]*$/,
-                                    message: 'Only numbers are allowed',
-                                },
-                            })}
+
+                        <FormField
+                            name="phone"
+                            control={control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Phone</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="1234567890" readOnly={isSubmitting} {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                        {errors.phone && (
-                            <span className="text-destructive text-sm">
-                                {errors.phone.message}
-                            </span>
-                        )}
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="address">Address</Label>
-                        <Textarea
-                            placeholder="1234 Elm St"
-                            readOnly={isSubmitting}
-                            id="address"
-                            {...register('address', {
-                                required: 'This field is required',
-                            })}
+                        <FormField
+                            name="address"
+                            control={control}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Phone</FormLabel>
+                                    <FormControl>
+                                        <Textarea placeholder="1234 Elm St" readOnly={isSubmitting} {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                        {errors.address && (
-                            <span className="text-destructive text-sm">
-                                {errors.address.message}
-                            </span>
-                        )}
-                    </div>
-                </form>
+                    </form>
+                </Form>
                 <DialogFooter>
-                    <Button
-                        type="submit"
-                        form="formContact"
-                        disabled={isSubmitting}
-                    >
+                    <Button type="submit" form="formContact" disabled={isSubmitting}>
                         {isSubmitting ? (
                             <span className="flex items-center gap-2">
                                 <LoaderCircle className="animate-spin" />

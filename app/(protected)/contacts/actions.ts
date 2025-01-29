@@ -3,17 +3,12 @@
 import { prisma } from '@/lib/prisma'
 import { CreateContactInputs } from './_components/CreateContact'
 import { Contact } from '@prisma/client'
-import { PaginationData } from '@/schemas/common'
-
-interface GetContactActionProps {
-    page: number
-    take: number
-}
+import { GetPaginateDataActionProps, PaginationData } from '@/schemas/common'
 
 export const GetContactAction = async ({
     page,
     take,
-}: GetContactActionProps): Promise<PaginationData<Contact[]>> => {
+}: GetPaginateDataActionProps): Promise<PaginationData<Contact[]>> => {
     const contacts = await prisma.contact.findMany({
         skip: page * take,
         take,
@@ -32,9 +27,7 @@ export const GetContactAction = async ({
     }
 }
 
-export const CreateContactAction = async (
-    data: CreateContactInputs
-): Promise<Contact> => {
+export const CreateContactAction = async (data: CreateContactInputs): Promise<Contact> => {
     const contact = await prisma.contact.create({
         data,
     })

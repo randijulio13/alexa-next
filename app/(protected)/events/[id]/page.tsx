@@ -1,8 +1,16 @@
 import AppBreadcrumb, { BreadcrumbItemProps } from '@/components/app/breadcrumb'
 import React from 'react'
-import EventDatatable from './_components/EventDatatable'
+import { GetEventByIdAction } from '../actions'
+import EventDetail from './_components/EventDetail'
 
-const page = async () => {
+interface EditEventPageProps {
+    params: Promise<{ id: string }>
+}
+
+const page = async ({ params }: EditEventPageProps) => {
+    const { id } = await params
+    const event = await GetEventByIdAction(Number(id))
+
     const items: BreadcrumbItemProps[] = [
         {
             label: 'Home',
@@ -10,6 +18,10 @@ const page = async () => {
         },
         {
             label: 'Events',
+            link: '/events',
+        },
+        {
+            label: event.name,
         },
     ]
     return (
@@ -17,7 +29,7 @@ const page = async () => {
             <div className="mb-4">
                 <AppBreadcrumb items={items} />
             </div>
-            <EventDatatable />
+            <EventDetail event={event} />
         </div>
     )
 }

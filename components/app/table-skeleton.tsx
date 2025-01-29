@@ -1,15 +1,14 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Contact } from '@prisma/client'
 import { flexRender, HeaderGroup } from '@tanstack/react-table'
 import React from 'react'
 
-interface TableSkeletonProps {
-    header: HeaderGroup<Contact>[]
+interface TableSkeletonProps<TData> {
+    header: HeaderGroup<TData>[]
     row: number
 }
 
-const TableSkeleton = ({ header, row }: TableSkeletonProps) => {
+const TableSkeleton = <TData,>({ header, row }: TableSkeletonProps<TData>) => {
     return (
         <Table className="border">
             <TableHeader>

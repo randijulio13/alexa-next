@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Button } from '@/components/ui/button'
 import { useTheme } from 'next-themes'
@@ -8,12 +8,8 @@ import { DoorOpen, Moon, Sun } from 'lucide-react'
 import { JWTPayload } from '@/schemas/common'
 import { Logout } from '@/app/login/actions'
 import { useRouter } from 'next/navigation'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import useAuthStore from '@/stores/auth'
 
 interface AppTopbarProps {
     userData: JWTPayload
@@ -25,6 +21,12 @@ const AppTopbar = ({ userData }: AppTopbarProps) => {
         setTheme(theme === 'light' ? 'dark' : 'light')
     }
     const router = useRouter()
+    const { setUserData } = useAuthStore()
+    useEffect(() => {
+        if (userData) {
+            setUserData(userData)
+        }
+    }, [])
 
     const handleLogout = async () => {
         await Logout()

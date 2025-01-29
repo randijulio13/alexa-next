@@ -14,12 +14,14 @@ export const GetVendorByIdAction = async (id: number): Promise<Vendor> => {
         where: {
             id,
         },
+        include: {
+            VendorsEvents: true,
+        },
     })
     return vendor as Vendor
 }
 
 export const CreateVendorAction = async (data: FormSchemaType): Promise<Vendor> => {
-    console.log({ data })
     const vendor = await prisma.vendor.create({
         data: {
             name: data.name,
@@ -30,10 +32,10 @@ export const CreateVendorAction = async (data: FormSchemaType): Promise<Vendor> 
     return vendor
 }
 
-export const DeleteVendorAction = async (vendor: Vendor): Promise<Vendor> => {
+export const DeleteVendorAction = async (id: number): Promise<Vendor> => {
     const deleted = await prisma.vendor.delete({
         where: {
-            id: vendor.id,
+            id,
         },
     })
     return deleted

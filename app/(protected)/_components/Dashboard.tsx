@@ -7,14 +7,15 @@ import { useMemo } from 'react'
 interface DashboardProps {
     totalContact: number
     totalVendor: number
+    totalEvent: number
 }
 
-const Dashboard = ({ totalContact, totalVendor }: DashboardProps) => {
+const Dashboard = ({ totalContact, totalVendor, totalEvent }: DashboardProps) => {
     const cards = useMemo(() => {
         return [
             {
                 title: 'Upcoming Events',
-                count: 5,
+                count: totalEvent,
                 icon: <Calendar className="!w-12 !h-12 opacity-10" />,
                 link: '/events',
             },
@@ -36,16 +37,10 @@ const Dashboard = ({ totalContact, totalVendor }: DashboardProps) => {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {cards.map((card, index) => (
-                <Button
-                    asChild
-                    className="h-24 flex items-center justify-between"
-                    key={index}
-                >
+                <Button asChild className="h-24 flex items-center justify-between" key={index}>
                     <Link href={card.link}>
                         <div className="flex flex-col gap-0 items-start">
-                            <h4 className="mb-0 text-4xl font-bold">
-                                {card.count}
-                            </h4>
+                            <h4 className="mb-0 text-4xl font-bold">{card.count}</h4>
                             <span>{card.title}</span>
                         </div>
                         {card.icon}
