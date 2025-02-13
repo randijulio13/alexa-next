@@ -14,7 +14,7 @@ const page = async () => {
         },
     ]
     return (
-        <div className="p-4">
+        <div className="px-8 py-4">
             <div className="mb-4">
                 <AppBreadcrumb items={items} />
             </div>

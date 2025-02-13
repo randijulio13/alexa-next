@@ -96,7 +96,7 @@ const EventDatatable = () => {
     }
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col">
             <div className="mb-4">
                 <CreateEvent {...{ refetch }} />
             </div>
